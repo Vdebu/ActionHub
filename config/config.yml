@@ -1,0 +1,9 @@
+app:
+  name: ActionHub
+  port: :3939
+database:
+  host: localhost
+  port: :3306
+  user: vdebu
+  password: 123456
+  name: actionhub_db
