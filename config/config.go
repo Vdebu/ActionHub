@@ -13,18 +13,18 @@ type Config struct {
 		Port string
 	}
 	Database struct {
-		Host     string
-		Port     string
-		User     string
-		Password string
-		Name     string
+		Host         string
+		Port         string
+		User         string
+		Password     string
+		Name         string
+		MaxIdleConns int
+		MaxOpenConns int
 	}
 }
 
-var AppConfig *Config
-
 // 读取外部yml配置文件
-func InitConfig() {
+func InitConfig() (*Config, error) {
 	// 设置外部配置文件的相关信息
 	// 设置文件名称(无需包含拓展名)
 	viper.SetConfigName("config")
@@ -35,13 +35,14 @@ func InitConfig() {
 	// 读取文件
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("Error reading config file %v", err)
-		return
+		return nil, err
 	}
-	// 初始化配置文件指针
-	AppConfig = &Config{}
+	// 初始化配置文件指!针!
+	AppConfig := &Config{}
 	// 将读取到的信息存储进结构体
 	if err := viper.Unmarshal(AppConfig); err != nil {
 		log.Fatalf("unable to decode configs %v", err)
-		return
+		return nil, err
 	}
+	return AppConfig, nil
 }

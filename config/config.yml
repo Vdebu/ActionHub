@@ -4,6 +4,8 @@ app:
 database:
   host: localhost
   port: :3306
-  user: vdebu
+  user: root
   password: 123456
-  name: actionhub_db
+  name: actionhub
+  MaxIdleConns: 10
+  MaxOpenConns: 20

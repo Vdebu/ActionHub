@@ -5,9 +5,6 @@ import (
 	"net/http"
 )
 
-type application struct {
-}
-
 // 初始化路由
 func routers() *gin.Engine {
 	// 使用gin的default(包含logger与recover)
