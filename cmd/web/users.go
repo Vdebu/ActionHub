@@ -14,5 +14,11 @@ func (app *application) registerUserHandler(c *gin.Context) {
 		app.badRequestResponse(c, err)
 		return
 	}
-
+	hashedPwd, err := app.hashPassword(input.Password)
+	if err != nil {
+		app.serverErrorResponse(c, err)
+		return
+	}
+	// 更新密码
+	input.Password = hashedPwd
 }
