@@ -3,7 +3,7 @@ package data
 import "gorm.io/gorm"
 
 type Models struct {
-	users UserModel
+	Users UserModel
 }
 
 // 初始化数据模型
