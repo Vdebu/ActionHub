@@ -10,7 +10,7 @@ import (
 func (app *application) InitServer() error {
 	srv := &http.Server{
 		Addr:         fmt.Sprintf("%s", app.cfg.APP.Port), // 根据配置文件中的信息初始化服务器端口
-		Handler:      routers(),
+		Handler:      app.routers(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  time.Second * 10,
 		WriteTimeout: time.Second * 10,

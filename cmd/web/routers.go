@@ -2,18 +2,17 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // 初始化路由
-func routers() *gin.Engine {
+func (app *application) routers() *gin.Engine {
 	// 使用gin的default(包含logger与recover)
-	router := gin.Default()
-	router.GET("/ping", func(context *gin.Context) {
-		// 输出相应成功的信息
-		context.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
-	return router
+	r := gin.Default()
+	auth := r.Group("/api/auth")
+	{
+		// 用户登入与注册
+		auth.POST("/login", app.registerUserHandler)
+		auth.POST("/register")
+	}
+	return r
 }
