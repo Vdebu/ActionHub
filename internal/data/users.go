@@ -34,6 +34,7 @@ func (m UserModel) Migrate(user *User) error {
 
 // 向表中插入记录
 func (m UserModel) Create(user *User) error {
+	// 这里也同样会返回自动生成的信息如id与创建时间(但只取错误信息)
 	return m.db.Create(user).Error
 }
 
