@@ -28,7 +28,23 @@ func (app *application) notFound(c *gin.Context) {
 	msg := "the requested source can not be found"
 	app.errorResponse(c, http.StatusNotFound, msg)
 }
+
+// 返回填写信息无效
 func (app *application) invalidCredentialsResponse(c *gin.Context) {
 	msg := "invalid authentication credentials"
+	app.errorResponse(c, http.StatusUnauthorized, msg)
+}
+
+// 返回需要认证
+func (app *application) authenticationRequiredResponse(c *gin.Context) {
+	msg := "you must be authenticated to access this resource"
+	app.errorResponse(c, http.StatusUnauthorized, msg)
+}
+
+// 返回表头存储的秘钥无效
+func (app *application) invalidAuthenticationTokenResponse(c *gin.Context) {
+	// 告诉客户端应该使用未加密的Token进行认证
+	c.Header("WWW-Authenticate", "Bearer")
+	msg := "invalid or missing authentication key"
 	app.errorResponse(c, http.StatusUnauthorized, msg)
 }

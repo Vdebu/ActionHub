@@ -34,5 +34,5 @@ func (m ExchangeRateModel) Create(exchangeRate *ExchangeRate) error {
 
 // 返回最新的汇率信息
 func (m ExchangeRateModel) GetLatest(exchangeRates *[]*ExchangeRate) error {
-	return m.db.Find(exchangeRates).Error
+	return m.db.Order("date DESC").Find(exchangeRates).Error
 }
