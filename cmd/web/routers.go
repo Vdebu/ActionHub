@@ -11,8 +11,8 @@ func (app *application) routers() *gin.Engine {
 	auth := r.Group("/api/auth")
 	{
 		// 用户登入与注册
-		auth.POST("/login", app.registerUserHandler)
-		auth.POST("/register")
+		auth.POST("/login", app.loginUserHandler)
+		auth.POST("/register", app.registerUserHandler)
 	}
 	return r
 }

@@ -45,7 +45,8 @@ func main() {
 }
 func initDB(cfg *config.Config) (*gorm.DB, error) {
 	// 初始化数据库源tcp(%s:%s)
-	dsn := fmt.Sprintf("%s:%s@/%s?charset=utf8mb4#parseTime=true",
+	// 应该是用&连接而不是#
+	dsn := fmt.Sprintf("%s:%s@/%s?charset=utf8mb4&parseTime=true",
 		cfg.Database.User,
 		cfg.Database.Password,
 		cfg.Database.Name)

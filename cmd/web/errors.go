@@ -28,3 +28,7 @@ func (app *application) notFound(c *gin.Context) {
 	msg := "the requested source can not be found"
 	app.errorResponse(c, http.StatusNotFound, msg)
 }
+func (app *application) invalidCredentialsResponse(c *gin.Context) {
+	msg := "invalid authentication credentials"
+	app.errorResponse(c, http.StatusUnauthorized, msg)
+}
