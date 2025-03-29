@@ -1,10 +1,12 @@
 package main
 
 import (
+	"ActionHub/internal/data"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -63,4 +65,18 @@ func (app *application) parseJWT(tokenString string) (string, error) {
 		return username, nil
 	}
 	return "", err
+}
+
+// 读取url中的参数
+func (app *application) readID(c *gin.Context) (string, error) {
+	stringID := c.Param("id")
+	ID, err := strconv.Atoi(stringID)
+	if err != nil {
+		return "", err
+	}
+	// 输入的查询参数无效
+	if stringID == "" || ID < 1 {
+		return "", data.ErrInvalidIDParams
+	}
+	return stringID, nil
 }

@@ -4,9 +4,9 @@ import (
 	"ActionHub/internal/data"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis"
 	"gorm.io/gorm"
 	"net/http"
-	"strconv"
 )
 
 func (app *application) createArticle(c *gin.Context) {
@@ -44,15 +44,14 @@ func (app *application) getArticles(c *gin.Context) {
 
 // 通过id获取文章
 func (app *application) getArticle(c *gin.Context) {
-	stringID := c.Param("id")
-	ID, err := strconv.Atoi(stringID)
+	stringID, err := app.readID(c)
 	if err != nil {
-		app.serverErrorResponse(c, err)
-		return
-	}
-	// 输入的查询参数无效
-	if stringID == "" || ID < 1 {
-		app.badRequestResponse(c, data.ErrInvalidIDParams)
+		switch {
+		case errors.Is(err, data.ErrInvalidIDParams):
+			app.badRequestResponse(c, data.ErrInvalidIDParams)
+		default:
+			app.serverErrorResponse(c, err)
+		}
 		return
 	}
 	// 根据解析出来的参数查询相关数据
@@ -69,4 +68,59 @@ func (app *application) getArticle(c *gin.Context) {
 	}
 	// 输出生成的结果
 	app.writeJSON(c, http.StatusOK, envelop{"article": article})
+}
+func (app *application) likeArticle(c *gin.Context) {
+	// 读取参数
+	stringID, err := app.readID(c)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrInvalidIDParams):
+			app.badRequestResponse(c, data.ErrInvalidIDParams)
+		default:
+			app.serverErrorResponse(c, err)
+		}
+		return
+	}
+	// 定义当前文章的article:ID:likes(redis中的kv规范)
+	// 使用字符串拼接进行定义
+	likeKey := "article:" + stringID + ":likes"
+	// 将当前的键值+1
+	if err := app.models.Articles.Likes(likeKey); err != nil {
+		app.serverErrorResponse(c, err)
+		return
+	}
+	// 返回成功点赞的信息
+	app.writeJSON(c, http.StatusOK, envelop{
+		"message": "Successfully liked the article",
+	})
+}
+
+// 获取点赞数
+func (app *application) getArticleLikes(c *gin.Context) {
+	stringID, err := app.readID(c)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrInvalidIDParams):
+			app.badRequestResponse(c, data.ErrInvalidIDParams)
+		default:
+			app.serverErrorResponse(c, err)
+		}
+		return
+	}
+	likeKey := "article:" + stringID + ":likes"
+	// 获取redis中的键值
+	likes, err := app.models.Articles.GetLikes(likeKey)
+	if err != nil {
+		switch {
+		case errors.Is(err, redis.Nil):
+			// 若当前点赞的信息不存在则表示当前点赞为0
+			likes = "0"
+			// 不需要return
+		default:
+			app.serverErrorResponse(c, err)
+			return
+		}
+	}
+	// 返回获取到的数据
+	app.writeJSON(c, http.StatusOK, envelop{"likes": likes})
 }

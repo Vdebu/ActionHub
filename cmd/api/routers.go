@@ -18,13 +18,16 @@ func (app *application) routers() *gin.Engine {
 	// 权限不敏感的操作
 	api.GET("/exchangeRate", app.getExchangeRate)
 	api.GET("/articles", app.getArticles)
-	api.GET("/articles:id", app.getArticle)
+	api.GET("/articles/:id", app.getArticle)
 	// 以下操作需要登入后才能进行
 	api.Use(app.requireAuthentication())
 	{
 		// 使用POST方法创建新的汇率信息
 		api.POST("/exchangeRate", app.createExchangeRate)
+		// 创建新文章
 		api.POST("/articles", app.createArticle)
+		// 为文章点赞
+		api.POST("/articles/:id/like", app.likeArticle)
 	}
 	return r
 }

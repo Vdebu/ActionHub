@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/go-redis/redis"
 	"gorm.io/gorm"
+	"sync"
 )
 
 var (
@@ -46,4 +47,18 @@ func (m ArticleModel) GetLatest(articles *[]Article) error {
 // 根据提供的id查询文章
 func (m ArticleModel) GetByID(id string, article *Article) error {
 	return m.db.Where("id = ?", id).First(article).Error
+}
+
+// 为文章点赞
+func (m ArticleModel) Likes(likesKey string) error {
+	// 嵌入互斥锁保证点赞操作正常进行
+	var mu sync.Mutex
+	mu.Lock()
+	defer mu.Unlock()
+	// 为当前传入的键值加1即可
+	return m.redisDB.Incr(likesKey).Err()
+}
+func (m ArticleModel) GetLikes(likesKey string) (string, error) {
+	// 返回传入键的值
+	return m.redisDB.Get(likesKey).Result()
 }
