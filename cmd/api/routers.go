@@ -15,13 +15,16 @@ func (app *application) routers() *gin.Engine {
 		auth.POST("/register", app.registerUserHandler)
 	}
 	api := r.Group("/api")
-	// 获取最新的汇率信息是不需要登入权限的
+	// 权限不敏感的操作
 	api.GET("/exchangeRate", app.getExchangeRate)
+	api.GET("/articles", app.getArticles)
+	api.GET("/articles:id", app.getArticle)
 	// 以下操作需要登入后才能进行
 	api.Use(app.requireAuthentication())
 	{
 		// 使用POST方法创建新的汇率信息
 		api.POST("/exchangeRate", app.createExchangeRate)
+		api.POST("/articles", app.createArticle)
 	}
 	return r
 }

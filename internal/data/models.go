@@ -5,6 +5,7 @@ import "gorm.io/gorm"
 type Models struct {
 	Users        UserModel
 	ExchangeRate ExchangeRateModel
+	Articles     ArticleModel
 }
 
 // 初始化数据模型
@@ -13,5 +14,6 @@ func NewModels(db *gorm.DB) Models {
 	return Models{
 		Users:        UserModel{db: db},
 		ExchangeRate: ExchangeRateModel{db: db},
+		Articles:     ArticleModel{db: db},
 	}
 }

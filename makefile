@@ -1,7 +1,7 @@
-.PHONY: run/web build vendor audit
+.PHONY: run/api build vendor audit
 
-run/web:
-	go run ./cmd/web
+run/api:
+	go run ./cmd/api
 
 build:
 	go build -o=./bin/web ./cmd/web

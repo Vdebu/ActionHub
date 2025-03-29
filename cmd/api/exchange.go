@@ -31,10 +31,10 @@ func (app *application) createExchangeRate(c *gin.Context) {
 }
 func (app *application) getExchangeRate(c *gin.Context) {
 	// 存储查询到的汇率信息
-	var exchangeRates []*data.ExchangeRate
+	var exchangeRates []data.ExchangeRate
 	// 从数据库中读取数据
 	if err := app.models.ExchangeRate.GetLatest(&exchangeRates); err != nil {
-		app.serverErrorResponse(c, err)
+		app.notFound(c)
 		return
 	}
 	// 输出查找到的信息
