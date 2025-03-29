@@ -2,6 +2,7 @@ package data
 
 import (
 	"errors"
+	"github.com/go-redis/redis"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +19,8 @@ type Article struct {
 }
 
 type ArticleModel struct {
-	db *gorm.DB
+	db      *gorm.DB
+	redisDB *redis.Client
 }
 
 // 显式指定表名

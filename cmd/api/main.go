@@ -4,6 +4,7 @@ import (
 	"ActionHub/config"
 	"ActionHub/internal/data"
 	"fmt"
+	"github.com/go-redis/redis"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -30,7 +31,12 @@ func main() {
 	if err != nil {
 		logger.Fatalln(err)
 	}
-	models := data.NewModels(db)
+	// 尝试链接redis
+	redisDB, err := initRedis(cfg)
+	if err != nil {
+		logger.Fatalln(err)
+	}
+	models := data.NewModels(db, redisDB)
 	// 初始化相关依赖
 	app := &application{
 		cfg:    cfg,
@@ -43,6 +49,8 @@ func main() {
 		log.Fatal("failed to starting server %v", err)
 	}
 }
+
+// 初始化数据库
 func initDB(cfg *config.Config) (*gorm.DB, error) {
 	// 初始化数据库源tcp(%s:%s)
 	// 应该是用&连接而不是#
@@ -65,4 +73,20 @@ func initDB(cfg *config.Config) (*gorm.DB, error) {
 	// 设置关闭惰性链接的时间
 	sqlDB.SetConnMaxIdleTime(time.Hour)
 	return db, nil
+}
+
+// 初始化redis
+func initRedis(cfg *config.Config) (*redis.Client, error) {
+	RedisClient := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%s", cfg.Redis.Host, cfg.Redis.Port),
+		Password: cfg.Redis.Password,
+		DB:       cfg.Redis.DB,
+	})
+	// 检测是否成功链接
+	_, err := RedisClient.Ping().Result()
+	if err != nil {
+		return nil, err
+	}
+	// 返回redis连接池
+	return RedisClient, nil
 }

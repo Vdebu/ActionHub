@@ -1,6 +1,9 @@
 package data
 
-import "gorm.io/gorm"
+import (
+	"github.com/go-redis/redis"
+	"gorm.io/gorm"
+)
 
 type Models struct {
 	Users        UserModel
@@ -9,11 +12,11 @@ type Models struct {
 }
 
 // 初始化数据模型
-func NewModels(db *gorm.DB) Models {
+func NewModels(db *gorm.DB, redisDB *redis.Client) Models {
 	// 初始化数据库链接
 	return Models{
 		Users:        UserModel{db: db},
 		ExchangeRate: ExchangeRateModel{db: db},
-		Articles:     ArticleModel{db: db},
+		Articles:     ArticleModel{db: db, redisDB: redisDB},
 	}
 }

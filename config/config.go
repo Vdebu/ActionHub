@@ -21,6 +21,12 @@ type Config struct {
 		MaxIdleConns int
 		MaxOpenConns int
 	}
+	Redis struct {
+		Host     string
+		Port     string
+		DB       int
+		Password string
+	}
 }
 
 // 读取外部yml配置文件

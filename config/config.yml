@@ -9,3 +9,8 @@ database:
   name: actionhub
   MaxIdleConns: 10
   MaxOpenConns: 20
+redis:
+  host: localhost
+  port: 6379
+  db: 0
+  password: 
