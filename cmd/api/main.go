@@ -24,7 +24,7 @@ type application struct {
 
 func main() {
 	// 自定义日志输出(info:)
-	logger := log.New(os.Stdout, "INFO:", log.Ldate|log.Ltime)
+	logger := log.New(os.Stdout, "[INFO]:", log.Ldate|log.Ltime)
 	cfg, err := config.InitConfig()
 	if err != nil {
 		logger.Fatalln(err)
