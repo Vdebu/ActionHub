@@ -17,8 +17,11 @@ func (app *application) routers() *gin.Engine {
 	api := r.Group("/api")
 	// 权限不敏感的操作
 	api.GET("/exchangeRate", app.getExchangeRate)
+	// 获取所有文章或通过id获取指定文章
 	api.GET("/articles", app.getArticles)
 	api.GET("/articles/:id", app.getArticle)
+	// 获取指定文章的点赞信息
+	api.GET("/articles/:id/like", app.getArticleLikes)
 	// 以下操作需要登入后才能进行
 	api.Use(app.requireAuthentication())
 	{

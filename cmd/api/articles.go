@@ -84,10 +84,19 @@ func (app *application) likeArticle(c *gin.Context) {
 	// 定义当前文章的article:ID:likes(redis中的kv规范)
 	// 使用字符串拼接进行定义
 	likeKey := "article:" + stringID + ":likes"
+	// 使用分布式锁
+	if err := app.mu.Lock(); err != nil {
+		app.serverErrorResponse(c, err)
+		return
+	}
 	// 将当前的键值+1
 	if err := app.models.Articles.Likes(likeKey); err != nil {
 		app.serverErrorResponse(c, err)
 		return
+	}
+	// 解锁
+	if ok, err := app.mu.Unlock(); !ok || err != nil {
+		panic("unlock failed")
 	}
 	// 返回成功点赞的信息
 	app.writeJSON(c, http.StatusOK, envelop{

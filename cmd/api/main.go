@@ -5,6 +5,9 @@ import (
 	"ActionHub/internal/data"
 	"fmt"
 	"github.com/go-redis/redis"
+	"github.com/go-redsync/redsync/v4"
+	"github.com/go-redsync/redsync/v4/redis/goredis/v9"
+	goredislib "github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -16,6 +19,7 @@ type application struct {
 	cfg    *config.Config
 	logger *log.Logger
 	models data.Models
+	mu     *redsync.Mutex
 }
 
 func main() {
@@ -37,16 +41,20 @@ func main() {
 		logger.Fatalln(err)
 	}
 	models := data.NewModels(db, redisDB)
+	// 初始化分布式锁
+	rs := initRedSync(cfg)
+	mutex := rs.NewMutex("likesMutex")
 	// 初始化相关依赖
 	app := &application{
 		cfg:    cfg,
 		models: models,
+		mu:     mutex,
 	}
 	// 查看配置文件是否解码成功
 	fmt.Println(app.cfg)
 	err = app.InitServer()
 	if err != nil {
-		log.Fatal("failed to starting server %v", err)
+		log.Fatalf("failed to starting server %v", err)
 	}
 }
 
@@ -89,4 +97,15 @@ func initRedis(cfg *config.Config) (*redis.Client, error) {
 	}
 	// 返回redis连接池
 	return RedisClient, nil
+}
+func initRedSync(cfg *config.Config) *redsync.Redsync {
+	// 使用go-redis创建redis链接池列表
+	client := goredislib.NewClient(&goredislib.Options{
+		Addr: fmt.Sprintf("%s:%s", cfg.Redis.Host, cfg.Redis.Port),
+	})
+	// 初始化分布式锁可用的redis数据库连接池
+	pool := goredis.NewPool(client)
+	// 传入数据库连接池初始化锁
+	rs := redsync.New(pool)
+	return rs
 }
