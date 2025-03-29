@@ -29,6 +29,22 @@ func (app *application) createArticle(c *gin.Context) {
 		app.serverErrorResponse(c, err)
 		return
 	}
+	// 创建新文章后将缓存中的旧数据删除(触发缓存未命中保证后续得到的是最新数据)
+	// 上锁
+	if err := app.mu.Lock(); err != nil {
+		app.EditConflictResponse(c)
+		return
+	}
+	// 删除操作
+	if err := app.models.Articles.DelOldCache(); err != nil {
+		app.serverErrorResponse(c, err)
+		return
+	}
+	// 解锁
+	if ok, err := app.mu.Unlock(); !ok || err != nil {
+		panic("unlock failed")
+		return
+	}
 	// 输出成功插入的数据
 	app.writeJSON(c, http.StatusCreated, envelop{"article": article})
 }
@@ -126,7 +142,7 @@ func (app *application) likeArticle(c *gin.Context) {
 	likeKey := "article:" + stringID + ":likes"
 	// 使用分布式锁
 	if err := app.mu.Lock(); err != nil {
-		app.serverErrorResponse(c, err)
+		app.EditConflictResponse(c)
 		return
 	}
 	// 将当前的键值+1

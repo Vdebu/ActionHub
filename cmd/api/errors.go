@@ -55,3 +55,9 @@ func (app *application) invalidAuthenticationTokenResponse(c *gin.Context) {
 func (app *application) duplicateKeyResponse(c *gin.Context) {
 	app.errorResponse(c, http.StatusUnprocessableEntity, data.ErrDuplicateName)
 }
+
+// 数据编辑冲突
+func (app *application) EditConflictResponse(c *gin.Context) {
+	msg := "edit conflict please try again later"
+	app.errorResponse(c, http.StatusConflict, msg)
+}

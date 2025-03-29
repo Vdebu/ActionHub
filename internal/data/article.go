@@ -75,3 +75,6 @@ func (m ArticleModel) GetLikes(likesKey string) (string, error) {
 func (m ArticleModel) SetValueInCache(value interface{}, expire time.Duration) error {
 	return m.redisDB.Set(m.cacheKey, value, expire).Err()
 }
+func (m ArticleModel) DelOldCache() error {
+	return m.redisDB.Del(m.cacheKey).Err()
+}
