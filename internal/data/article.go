@@ -4,10 +4,12 @@ import (
 	"errors"
 	"github.com/go-redis/redis"
 	"gorm.io/gorm"
+	"time"
 )
 
 var (
 	ErrInvalidIDParams = errors.New("invalid id params")
+	ErrDuplicateName   = errors.New("name already exists")
 )
 
 type Article struct {
@@ -19,8 +21,9 @@ type Article struct {
 }
 
 type ArticleModel struct {
-	db      *gorm.DB
-	redisDB *redis.Client
+	db       *gorm.DB
+	redisDB  *redis.Client
+	cacheKey string // 读取/存储缓存在内存中的数据
 }
 
 // 显式指定表名
@@ -38,8 +41,18 @@ func (m ArticleModel) Create(article *Article) error {
 	return m.db.Create(article).Error
 }
 
-// 获取最新文章用于展示
-func (m ArticleModel) GetLatest(articles *[]Article) error {
+// 从缓存中获取信息用于展示
+func (m ArticleModel) GetLatestInCache() (string, error) {
+	// 通过cacheKey从redis缓存中获取内容
+	cachedData, err := m.redisDB.Get(m.cacheKey).Result()
+	if err != nil {
+		return "", err
+	}
+	return cachedData, nil
+}
+
+// 从数据库中获取最新文章用于展示
+func (m ArticleModel) GetLatestInDatabase(articles *[]Article) error {
 	return m.db.Find(articles).Error
 }
 
@@ -56,4 +69,9 @@ func (m ArticleModel) Likes(likesKey string) error {
 func (m ArticleModel) GetLikes(likesKey string) (string, error) {
 	// 返回传入键的值
 	return m.redisDB.Get(likesKey).Result()
+}
+
+// 将kv对存放进缓存并设置过期时间
+func (m ArticleModel) SetValueInCache(value interface{}, expire time.Duration) error {
+	return m.redisDB.Set(m.cacheKey, value, expire).Err()
 }

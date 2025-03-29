@@ -2,7 +2,9 @@ package main
 
 import (
 	"ActionHub/internal/data"
+	"errors"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -37,7 +39,12 @@ func (app *application) registerUserHandler(c *gin.Context) {
 	// 插入数据
 	err = app.models.Users.Create(&user)
 	if err != nil {
-		app.serverErrorResponse(c, err)
+		switch {
+		case errors.Is(err, gorm.ErrDuplicatedKey):
+			app.duplicateKeyResponse(c)
+		default:
+			app.serverErrorResponse(c, err)
+		}
 		return
 	}
 	// 流程中未出现问题

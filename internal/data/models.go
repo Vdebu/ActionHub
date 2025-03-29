@@ -17,6 +17,6 @@ func NewModels(db *gorm.DB, redisDB *redis.Client) Models {
 	return Models{
 		Users:        UserModel{db: db},
 		ExchangeRate: ExchangeRateModel{db: db},
-		Articles:     ArticleModel{db: db, redisDB: redisDB},
+		Articles:     ArticleModel{db: db, redisDB: redisDB, cacheKey: "cachedArticles"},
 	}
 }

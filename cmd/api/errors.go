@@ -1,6 +1,7 @@
 package main
 
 import (
+	"ActionHub/internal/data"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -15,6 +16,7 @@ func (app *application) errorResponse(c *gin.Context, status int, message interf
 // 内部服务器错误
 func (app *application) serverErrorResponse(c *gin.Context, err error) {
 	// 在控制台输出错误的相关信息
+	app.logger.Println(err.Error())
 	msg := "this server encountered a problem and can not process your request"
 	app.errorResponse(c, http.StatusInternalServerError, msg)
 }
@@ -47,4 +49,9 @@ func (app *application) invalidAuthenticationTokenResponse(c *gin.Context) {
 	c.Header("WWW-Authenticate", "Bearer")
 	msg := "invalid or missing authentication key"
 	app.errorResponse(c, http.StatusUnauthorized, msg)
+}
+
+// 插入用户名重复
+func (app *application) duplicateKeyResponse(c *gin.Context) {
+	app.errorResponse(c, http.StatusUnprocessableEntity, data.ErrDuplicateName)
 }

@@ -49,9 +49,9 @@ func main() {
 		cfg:    cfg,
 		models: models,
 		mu:     mutex,
+		logger: logger,
 	}
 	// 查看配置文件是否解码成功
-	fmt.Println(app.cfg)
 	err = app.InitServer()
 	if err != nil {
 		log.Fatalf("failed to starting server %v", err)

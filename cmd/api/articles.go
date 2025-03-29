@@ -2,11 +2,13 @@ package main
 
 import (
 	"ActionHub/internal/data"
+	"encoding/json"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 	"gorm.io/gorm"
 	"net/http"
+	"time"
 )
 
 func (app *application) createArticle(c *gin.Context) {
@@ -32,13 +34,51 @@ func (app *application) createArticle(c *gin.Context) {
 }
 
 func (app *application) getArticles(c *gin.Context) {
+	// 旁路缓存模式
+	// 这里返回的是一个string(redis的硬性存储要求)后续要转为为[]byte反序列化
+	cachedData, err := app.models.Articles.GetLatestInCache()
+	if err != nil {
+		switch {
+		case errors.Is(err, redis.Nil):
+			// 如果返回的err是redis.nil则说明缓存不存在
+			// 处理缓存未命中的情况
+			var articles []data.Article
+			if err := app.models.Articles.GetLatestInDatabase(&articles); err != nil {
+				switch {
+				case errors.Is(err, gorm.ErrRecordNotFound):
+					app.notFound(c)
+				default:
+					app.serverErrorResponse(c, err)
+				}
+				return
+			}
+			// 将从数据库获取到的数据序列化为JSON存放进缓存中
+			articleJSON, err := json.Marshal(articles)
+			if err != nil {
+				app.serverErrorResponse(c, err)
+				return
+			}
+			// 使用对应键设置值(cachedArticle)
+			if err := app.models.Articles.SetValueInCache(articleJSON, 10*time.Minute); err != nil {
+				app.serverErrorResponse(c, err)
+				return
+			}
+			// 输出查询到的内容
+			app.writeJSON(c, http.StatusOK, envelop{"articles": articles})
+			return
+		default:
+			app.serverErrorResponse(c, err)
+			return
+		}
+	}
+	// 缓存命中
+	// 反序列化为原始数据
 	var articles []data.Article
-	// 获取最新的文章展示
-	if err := app.models.Articles.GetLatest(&articles); err != nil {
+	if err := json.Unmarshal([]byte(cachedData), &articles); err != nil {
 		app.serverErrorResponse(c, err)
 		return
 	}
-	// 输出最新的文章
+	// 输出获取到的最新的文章
 	app.writeJSON(c, http.StatusOK, envelop{"articles": articles})
 }
 
