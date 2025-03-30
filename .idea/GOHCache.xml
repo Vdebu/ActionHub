@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GoORMHelperCache">
+    <option name="schemaMapping">
+      <map>
+        <entry key="Article">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/internal/data/article.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="ArticleModel">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/internal/data/article.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="Config">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/config/config.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="ExchangeRate">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/internal/data/exchange.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="ExchangeRateModel">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/internal/data/exchange.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="Models">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/internal/data/models.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/internal/data/user.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="UserModel">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/internal/data/user.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="application">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/cmd/api/main.go" />
+            </set>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="scannedPathMapping">
+      <map>
+        <entry key="file://$PROJECT_DIR$/cmd/api/articles.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743243411862" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/cmd/api/errors.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743243359088" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/cmd/api/exchange.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743222864522" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/cmd/api/helpers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743227587811" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/cmd/api/main.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743314671192" />
+              <option name="schema">
+                <list>
+                  <option value="application" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/cmd/api/middlewares.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743259923194" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/cmd/api/routers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743261188609" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/cmd/api/server.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743262280964" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/cmd/api/users.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743238400169" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/config/config.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743312497528" />
+              <option name="schema">
+                <list>
+                  <option value="Config" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/docker-compose.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743308375902" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/internal/data/article.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743243113451" />
+              <option name="schema">
+                <list>
+                  <option value="Article" />
+                  <option value="ArticleModel" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/internal/data/exchange.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743221820118" />
+              <option name="schema">
+                <list>
+                  <option value="ExchangeRate" />
+                  <option value="ExchangeRateModel" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/internal/data/models.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743239380074" />
+              <option name="schema">
+                <list>
+                  <option value="Models" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/internal/data/user.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1743147240374" />
+              <option name="schema">
+                <list>
+                  <option value="User" />
+                  <option value="UserModel" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="tableStructMapping">
+      <map>
+        <entry key="application" value="application" />
+        <entry key="article" value="Article" />
+        <entry key="article_model" value="ArticleModel" />
+        <entry key="config" value="Config" />
+        <entry key="exchange_rate" value="ExchangeRate" />
+        <entry key="exchange_rate_model" value="ExchangeRateModel" />
+        <entry key="models" value="Models" />
+        <entry key="user" value="User" />
+        <entry key="user_model" value="UserModel" />
+      </map>
+    </option>
+    <option name="lastTimeChecked" value="1743308347343" />
+  </component>
+</project>

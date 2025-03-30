@@ -4,7 +4,7 @@ run/api:
 	go run ./cmd/api
 
 build:
-	go build -o=./bin/web ./cmd/web
+	go build -o=./bin/api ./cmd/api
 vendor:
 	@echo Tidying and verifying module dependencies...
 	go mod tidy

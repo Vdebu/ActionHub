@@ -3,6 +3,7 @@ package main
 import (
 	"ActionHub/config"
 	"ActionHub/internal/data"
+	"flag"
 	"fmt"
 	"github.com/go-redis/redis"
 	"github.com/go-redsync/redsync/v4"
@@ -29,6 +30,15 @@ func main() {
 	if err != nil {
 		logger.Fatalln(err)
 		return
+	}
+	// 创建变量表名部署环境
+	flag.BoolVar(&cfg.DockerDeploy, "docker", false, "only enable on docker deployment")
+	flag.Parse()
+	// 判断是否是docker部署环境
+	if cfg.DockerDeploy {
+		// 将host设置为服务名
+		cfg.Redis.Host = "redis"
+		logger.Println(cfg.DockerDeploy)
 	}
 	// 尝试链接数据库
 	db, err := initDB(cfg)
@@ -62,10 +72,15 @@ func main() {
 func initDB(cfg *config.Config) (*gorm.DB, error) {
 	// 初始化数据库源tcp(%s:%s)
 	// 应该是用&连接而不是#
-	dsn := fmt.Sprintf("%s:%s@/%s?charset=utf8mb4&parseTime=true",
-		cfg.Database.User,
-		cfg.Database.Password,
-		cfg.Database.Name)
+	dsn := ""
+	// 判断部署环境后再获取dsn
+	if cfg.DockerDeploy {
+		// 只有在docker环境下才会自动导入.env文件作为环境变量
+		dsn = os.Getenv("MySqlDSN")
+	} else {
+		dsn = cfg.Database.MySqlDSN
+	}
+	log.Println(dsn)
 	// 尝试链接数据库
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {

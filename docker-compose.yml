@@ -1,0 +1,65 @@
+# 指定当前容器名称
+name: "ActionHub"
+# 定义所有服务
+services:
+  backend:
+    # 指定后端名称
+    container_name: ActionHubBackend
+    # 配置编译相关信息
+    build:
+      # 指定构建使用的上下文
+      context: .
+      dockerfile: Dockerfile
+    # 后端端口映射
+    ports:
+      - "3939:3939"
+    # 设置项目依赖
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # 设置环境变量
+    environment:
+      # 注意这里使用的是服务名而不是localhost
+      - MySqlDSN=${MySqlDSN}
+  mysql:
+    image: mysql
+    container_name: ActionHubMySql
+    restart: always
+    # 配置mysql基本信息
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: actionhub
+    # 设置端口映射
+    ports:
+      - "3339:3306"
+    # 持久化存储
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD","mysqladmin","ping"]
+      interval: 15s
+      timeout: 5s
+  redis:
+    image: redis:7.4-alpine
+    container_name: ActionHubRedis
+    restart: always
+#    environment: 使用默认配置就行
+    # 端口映射
+    ports:
+      - "8081:6379"
+    volumes:
+      - redis_data:/data
+      # 将外部redis.conf连接到容器
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    # 显式读取配置文件
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD","redis-cli","ping"]
+      interval: 15s
+      timeout: 5s
+# 声明所有的卷
+volumes:
+  mysql_data:
+  redis_data:

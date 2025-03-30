@@ -13,11 +13,7 @@ type Config struct {
 		Port string
 	}
 	Database struct {
-		Host         string
-		Port         string
-		User         string
-		Password     string
-		Name         string
+		MySqlDSN     string
 		MaxIdleConns int
 		MaxOpenConns int
 	}
@@ -27,6 +23,7 @@ type Config struct {
 		DB       int
 		Password string
 	}
+	DockerDeploy bool
 }
 
 // 读取外部yml配置文件
